@@ -1,0 +1,38 @@
+yarn init -y
+yarn add react react-dom next
+mkdir pages
+mkdir components
+mkdir styles  //in components dir
+
+yarn add typescrtipt @types/react @types/node
+
+
+//add to package.json
+"scripts": {
+  "dev": "next",
+  "build": "next build",
+  "start": "next start"
+},
+"prettier":{
+  "singlequote": "true"
+}
+
+pages
++ index.jsx      //main index file
+
+styles
++ <styles>.tsx  // 
+  + import { css } from "styled-components";
+  + 
+  + const felxCentered = css`
+  +   display: flex;
+  +   align-items: center;
+  +   justify-content: center;
+  + `;
+  +
+  + export default flexCentered;
+
+//in components, you can "import { flexCentered } from "./styles"
+
++ index.ts      // use to export styles "export { default as flexCentered } from './flecCentered';"
+
