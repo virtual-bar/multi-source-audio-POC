@@ -1,8 +1,13 @@
+import React, { useEffect, useState } from 'react';
 import Master from '../components/Master';
 
-//const audio = new Audio('/outfoxing.mp3');
-const faded = new Audio('/fadedTwo.mp3');
-
-const Home = () => <Master audioElement={faded} />;
+const Home = () => {
+  return (
+    <>
+      <h1>Hello Next.js!</h1>
+      <Master />
+    </>
+  );
+};
 
 export default Home;

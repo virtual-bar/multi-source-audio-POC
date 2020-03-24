@@ -1,35 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import AudioTrack from './AudioTrack';
 import styled from 'styled-components';
-import { flexCentered, Button } from './styles';
+import { flexCentered } from '../components/styles';
 
 const ButtonContainer = styled.div`
-  height: 100vh;
-  width: 100%;
-  flex-direction: vertical;
-  ${flexCentered};
+  ${flexCentered}
 `;
 
-const Master = ({ audioElement }) => {
-  const [playing, setPlaying] = useState(false);
+const getAudio = source => {
+  if (typeof window !== 'undefined') {
+    const audio = new Audio(source);
+    return audio;
+  }
+};
 
-  const togglePlaying = () => {
-    setPlaying(!playing);
-    audioElement.paused ? audioElement.play() : audioElement.pause();
-  };
-
+const Master = () => {
   return (
     <>
+      <h1>Hello!</h1>
+      <h2>Hello!</h2>
+      <h3>Hello!</h3>
+      <h4>Hello!</h4>
+      <p>Hello!</p>
       <ButtonContainer>
-        <Button
-          data-playing={playing}
-          className="control-play"
-          role="switch"
-          onClick={togglePlaying}
-        >
-          {playing ? 'Playing' : 'Paused'}
-        </Button>
+        <AudioTrack audioElement={getAudio('/outfoxing.mp3')} />
+        <AudioTrack audioElement={getAudio('/fadedTwo.mp3')} />
       </ButtonContainer>
     </>
   );
 };
+
 export default Master;
