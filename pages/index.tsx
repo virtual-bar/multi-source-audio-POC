@@ -12,16 +12,14 @@ const isServer = () => typeof window === 'undefined';
 
 const Index = () => {
   return (
-    <>
-      <Home>
-        <h1>Multisource Audio Control POC</h1>
-        <p>
-          A proof of concept using multiple audio sources attached through Web
-          Audio API.
-        </p>
-        {!isServer() && <Master />}
-      </Home>
-    </>
+    <Home>
+      <h1>Multisource Audio Control POC</h1>
+      <p>
+        A proof of concept using multiple audio sources attached through Web
+        Audio API.
+      </p>
+      {!isServer() && <Master />}
+    </Home>
   );
 };
 
