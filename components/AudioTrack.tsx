@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './styles';
 
-const useAudio = ({ initialGain }) => {
-  const AudioContext = window.AudioContext;
-  const [audioCtx] = useState(new AudioContext());
-  const [gainNode] = useState(audioCtx.createGain());
-
-  gainNode.gain.value = initialGain;
-
-  return { audioCtx, gainNode };
-};
-
-const AudioTrack = ({ audioElement }) => {
+// Main function
+const AudioTrack = ({ audioElement, audioCtx, masterGainNode }) => {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
 
+  // Function definition to toggle playing
   const togglePlaying = () => {
     setPlaying(!playing);
   };
 
+  // Custom hook to create elementGainNode
+  const useElementGain = ({ initialGain }) => {
+    const [elementGain] = useState(audioCtx.createGain());
+
+    elementGain.gain.value = initialGain;
+
+    return { elementGain };
+  };
+
+  // Function definition to change element volume
   const changeVolume = e => {
     const {
       target: { value }
@@ -26,28 +28,36 @@ const AudioTrack = ({ audioElement }) => {
     setVolume(value);
   };
 
-  const { audioCtx, gainNode } = useAudio({ initialGain: 1 });
-
+  // Getter for audio source for use in useEffect
   const getAudioElement = () => audioElement;
 
+  // One-Time post-render setup and connections
   useEffect(() => {
     const audioElement = getAudioElement();
     const track = audioCtx.createMediaElementSource(audioElement);
 
-    track.connect(gainNode).connect(audioCtx.destination);
+    track
+      .connect(elementGain)
+      .connect(masterGainNode)
+      .connect(audioCtx.destination);
   }, []);
+
+  const { elementGain } = useElementGain({ initialGain: 1 });
 
   useEffect(() => {
     const audioElement = getAudioElement();
 
     if (playing && audioElement.paused) {
       audioElement.play();
+      console.log(playing);
     } else if (!playing && !audioElement.paused) {
       audioElement.pause();
       console.log(playing);
     }
 
-    gainNode.gain.value = volume;
+    console.log('audio event changed');
+
+    elementGain.gain.value = volume;
   }, [playing, volume]);
 
   return (
