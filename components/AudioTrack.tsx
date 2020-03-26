@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './styles';
 
 // Main function
-const AudioTrack = ({ audioElement, audioCtx, masterGainNode }) => {
+const AudioTrack = ({ audioElement, audioCtx, groupGainNode }) => {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
 
@@ -11,14 +11,15 @@ const AudioTrack = ({ audioElement, audioCtx, masterGainNode }) => {
     setPlaying(!playing);
   };
 
-  // Custom hook to create elementGainNode
+  // Function to create elementGainNode
   const useElementGain = ({ initialGain }) => {
     const [elementGain] = useState(audioCtx.createGain());
-
-    elementGain.gain.value = initialGain;
-
+    elementGain.gain.setValueAtTime(initialGain, audioCtx.currentTime);
     return { elementGain };
   };
+
+  // Initialize elementGain
+  const { elementGain } = useElementGain({ initialGain: 1 });
 
   // Function definition to change element volume
   const changeVolume = e => {
@@ -38,28 +39,24 @@ const AudioTrack = ({ audioElement, audioCtx, masterGainNode }) => {
 
     track
       .connect(elementGain)
-      .connect(masterGainNode)
+      .connect(groupGainNode)
       .connect(audioCtx.destination);
   }, []);
 
-  const { elementGain } = useElementGain({ initialGain: 1 });
-
+  // Repeatable settings for playing and volume states
   useEffect(() => {
     const audioElement = getAudioElement();
 
     if (playing && audioElement.paused) {
       audioElement.play();
-      console.log(playing);
     } else if (!playing && !audioElement.paused) {
       audioElement.pause();
-      console.log(playing);
     }
 
-    console.log('audio event changed');
-
-    elementGain.gain.value = volume;
+    elementGain.gain.setValueAtTime(volume, audioCtx.currentTime);
   }, [playing, volume]);
 
+  // More JSX
   return (
     <>
       <Button
@@ -80,7 +77,7 @@ const AudioTrack = ({ audioElement, audioCtx, masterGainNode }) => {
         value={volume}
         onChange={changeVolume}
         list="gainVals"
-        step="0.01"
+        step="0.05"
       />
       <datalist id="gainVals">
         <option value="1" label="unity" />
